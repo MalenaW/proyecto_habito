@@ -1,0 +1,19 @@
+{
+  "name": "habito-proyecto",
+  "version": "1.0.0",
+  "description": "aplicacion de habitos",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MalenaW/proyecto_habito.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MalenaW/proyecto_habito/issues"
+  },
+  "homepage": "https://github.com/MalenaW/proyecto_habito#readme"
+}
