@@ -6,7 +6,7 @@ export default function Home(){
   return (
     <View>
         <Link href={'/(tabs)'} asChild>
-        <Button title='Ir a Tabs'>
+        <Button title='Entrar'>
 
         </Button>
         </Link>
