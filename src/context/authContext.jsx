@@ -1,30 +1,55 @@
-import React, { createContext, useContext, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
+  const [isCargando, setIsCargando] = useState(true);
+  
+  useEffect(() => {
+    const cargarUsuario = async () => {
+      try {
+        const guardado = await AsyncStorage.getItem('usuario');
+        if (guardado) {
+          setUsuario(JSON.parse(guardado));
+          console.log("DEBUG Usuario cargado de AsyncStorage:", guardado);
+        }
+      } catch (error) {
+        console.error("DEBUG Error cargando usuario:", error);
+      } finally {
+      setIsCargando(false); // 
+    }
+  };
+    cargarUsuario();
+  }, []);
 
-  const login = (usuarioInput, password) => {
+  const login = async (usuarioInput, password) => {
     if (usuarioInput && password) {
-      console.log("DEBUG Login:", usuarioInput);
-      setUsuario({ usuario: usuarioInput });
+      const datos = { usuario: usuarioInput };
+      setUsuario(datos);
+      await AsyncStorage.setItem('usuario', JSON.stringify(datos));
+      console.log("DEBUG Usuario logueado y guardado:", datos);
     }
   };
 
-  const register = (usuarioInput, email, password) => {
+  const register = async (usuarioInput, email, password) => {
     if (usuarioInput && email && password) {
-      console.log("DEBUG Registro:", usuarioInput, email);
-      setUsuario({ usuario: usuarioInput, email });
+      const datos = { usuario: usuarioInput, email };
+      setUsuario(datos);
+      await AsyncStorage.setItem('usuario', JSON.stringify(datos));
+      console.log("DEBUG Usuario registrado y guardado:", datos);
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     setUsuario(null);
+    await AsyncStorage.removeItem('usuario');
+    console.log("DEBU Usuario deslogueado y eliminado de AsyncStorage");
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, login, register, logout }}>
+    <AuthContext.Provider value={{ usuario, login, register, logout, isCargando }}>
       {children}
     </AuthContext.Provider>
   );
