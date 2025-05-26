@@ -14,29 +14,45 @@ export default function Login() {
   const { login, register } = useAuth();
 
   const [usuario, setUsuario] = useState('');
-  
+
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
 
   const [esLogin, setEsLogin] = useState(true);
 
-  const handleSubmit = () => {
-     console.log("DEBUG: handleSubmit ejecutado");
-    if (!usuario || !password || (!esLogin && !email)) {
-      Alert.alert('Error', 'Completá todos los campos');
-      return;
-    }
+const emailValido = (email) => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+};
 
-    if (esLogin) {
-      if (password.length < 4) {
-        Alert.alert('Error', 'Contraseña demasiado corta');
-        return;
-      }
-      login(usuario, password);
-    } else {
-      register(usuario, email, password);
-    }
-  };
+const handleSubmit = () => {
+  if (!usuario || !password || (!esLogin && !email)) {
+    Alert.alert('Error', 'Completá todos los campos');
+    return;
+  }
+
+  if (usuario.length < 3) {
+    Alert.alert('Error', 'El usuario debe tener al menos 3 caracteres');
+    return;
+  }
+
+  if (password.length < 4) {
+    Alert.alert('Error', 'La contraseña debe tener al menos 4 caracteres');
+    return;
+  }
+
+  if (!esLogin && !emailValido(email)) {
+    Alert.alert('Error', 'Ingresá un email válido');
+    return;
+  }
+
+  if (esLogin) {
+    login(usuario, password);
+  } else {
+    register(usuario, email, password);
+  }
+};
+
 
   return (
     <View style={styles.container}>
