@@ -1,51 +1,68 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { Alert } from 'react-native';
+import { usuariosMockInicial } from '../data/usuariosMock';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [usuario, setUsuario] = useState(null);
+  const [usuario, setUsuario] = useState(null); // 
+  const [usuarios, setUsuarios] = useState(usuariosMockInicial); // 
   const [isCargando, setIsCargando] = useState(true);
-  
+
   useEffect(() => {
     const cargarUsuario = async () => {
       try {
         const guardado = await AsyncStorage.getItem('usuario');
         if (guardado) {
           setUsuario(JSON.parse(guardado));
-          console.log("DEBUG Usuario cargado de AsyncStorage:", guardado);
         }
       } catch (error) {
-        console.error("DEBUG Error cargando usuario:", error);
+        Alert.alert("Error", "No se pudo cargar la sesión");
       } finally {
-      setIsCargando(false); // 
-    }
-  };
+        setIsCargando(false);
+      }
+    };
     cargarUsuario();
   }, []);
 
-  const login = async (usuarioInput, password) => {
-    if (usuarioInput && password) {
-      const datos = { usuario: usuarioInput };
-      setUsuario(datos);
-      await AsyncStorage.setItem('usuario', JSON.stringify(datos));
-      console.log("DEBUG Usuario logueado y guardado:", datos);
+  const login = async (usuarioInput, passwordInput) => {
+    const usuarioEncontrado = usuarios.find(
+      (u) => u.usuario === usuarioInput && u.password === passwordInput
+    );
+
+    if (!usuarioEncontrado) {
+      Alert.alert("Error", "Usuario o contraseña incorrectos");
+      return;
     }
+
+    setUsuario(usuarioEncontrado);
+    await AsyncStorage.setItem('usuario', JSON.stringify(usuarioEncontrado));
   };
 
-  const register = async (usuarioInput, email, password) => {
-    if (usuarioInput && email && password) {
-      const datos = { usuario: usuarioInput, email };
-      setUsuario(datos);
-      await AsyncStorage.setItem('usuario', JSON.stringify(datos));
-      console.log("DEBUG Usuario registrado y guardado:", datos);
+  const register = async (usuarioInput, email, passwordInput) => {
+    const yaExiste = usuarios.some((u) => u.usuario === usuarioInput);
+
+    if (yaExiste) {
+      Alert.alert("Error", "Ese usuario ya está registrado");
+      return;
     }
+
+    const nuevoUsuario = {
+      usuario: usuarioInput,
+      email,
+      password: passwordInput
+    };
+
+    const nuevosUsuarios = [...usuarios, nuevoUsuario];
+    setUsuarios(nuevosUsuarios);
+    setUsuario(nuevoUsuario);
+    await AsyncStorage.setItem('usuario', JSON.stringify(nuevoUsuario));
   };
 
   const logout = async () => {
     setUsuario(null);
     await AsyncStorage.removeItem('usuario');
-    console.log("DEBU Usuario deslogueado y eliminado de AsyncStorage");
   };
 
   return (
@@ -56,3 +73,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+

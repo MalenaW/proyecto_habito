@@ -4,7 +4,7 @@ import { useAuth } from '../../context/authContext';
 export default function HomeTabs() {
   const { logout, usuario } = useAuth();
 
-  console.log("Contenido de usuario:", usuario);
+
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -15,7 +15,7 @@ export default function HomeTabs() {
 
       <View style={{ marginTop: 30 }}>
         <Button title="Cerrar sesión" onPress={() => {
-          console.log("Logout ejecutado");
+        
           logout();
         }} />
       </View>
