@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { useAuth } from '../context/authContext';
+import { COLORS } from '../constants/theme';
 
 export default function Login() {
   const { login, register } = useAuth();
@@ -112,6 +113,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginBottom: 24,
     textAlign: 'center',
+    color: COLORS.text,
   },
   input: {
     borderWidth: 1,
