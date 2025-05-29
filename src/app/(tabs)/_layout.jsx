@@ -1,9 +1,25 @@
-import React from 'react'
+import { Slot } from 'expo-router';
+import { View, StyleSheet } from 'react-native';
+import Navbar from '../../components/Navbar';
 
-export const Layout = () => {
+export default function TabsLayout() {
   return (
-    <Tabs>
-      <Tabs.Screen name="index" options={{ headerShown: false }} />
-    </Tabs>
-  )
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <Slot />
+      </View>
+      <Navbar />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  content: {
+    flex: 1,
+    marginBottom: 60, // Espacio para el navbar
+  },
+}); 
