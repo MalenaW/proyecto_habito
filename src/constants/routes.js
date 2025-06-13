@@ -2,7 +2,7 @@ export const RUTAS = [
   {
     nombre: 'Inicio',
     icono: 'home',
-    ruta: '/home',
+    ruta: '/',
   },
   {
     nombre: 'Hábitos',
@@ -16,7 +16,7 @@ export const RUTAS = [
   },
   {
     nombre: 'Perfil',
-    icono: 'user',
+    icono: 'user-circle',
     ruta: '/perfil',
   },
 ]; 

@@ -1,9 +1,8 @@
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useState, useEffect } from 'react';
 import GetFrases from './getFrases';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { translate } from '@vitalets/google-translate-api';
-
+import { COLORS } from '../../constants/theme';
 
 export default function Frases() {
   const [frase, setFrase] = useState(null);
@@ -41,12 +40,39 @@ export default function Frases() {
   }, []);
 
   if (!frase) return null;
-  const { text } =  translate(frase.q, { to: 'es' });
 
   return (
-    <View style={{ marginTop: 20, paddingHorizontal: 20 }}>
-      <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#000' }}>{frase.q}</Text>
-      <Text style={{ fontSize: 14, color: '#555', marginTop: 4 }}>– {frase.a}</Text>
+    <View style={styles.container}>
+      <Text style={styles.frase}>{frase.q}</Text>
+      <Text style={styles.autor}>– {frase.a}</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 15, 
+    paddingVertical: 15,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 8,
+    marginHorizontal: 10,
+    marginVertical: 5,
+  },
+  frase: {
+    fontSize: 15, 
+    fontWeight: 'bold', 
+    marginBottom: 8,
+    color: COLORS.text,
+  },
+  autor: {
+    fontSize: 16, 
+    color: COLORS.subtitle, 
+    fontStyle: 'italic',
+    textAlign: 'right',
+  }
+});
