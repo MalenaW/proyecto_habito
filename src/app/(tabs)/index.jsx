@@ -52,6 +52,10 @@ export default function Home() {
       fontSize: 18,
       color: COLORS.text
     },
+    logo: {
+      width:250,
+      height: 250,
+    },
     actionContainer: {
       backgroundColor: COLORS.white,
       padding: 20,

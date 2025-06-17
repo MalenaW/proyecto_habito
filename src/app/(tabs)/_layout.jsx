@@ -1,4 +1,4 @@
-import { Slot } from 'expo-router';
+import { Stack } from 'expo-router';
 import { View, StyleSheet } from 'react-native';
 import Navbar from '../../components/Navbar';
 
@@ -6,7 +6,7 @@ export default function TabsLayout() {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Slot />
+        <Stack screenOptions={{ headerShown: false }} />
       </View>
       <Navbar />
     </View>
