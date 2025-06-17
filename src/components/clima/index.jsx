@@ -14,6 +14,9 @@ export default function Clima() {
     if(location) return;
     try {
       setEstaCargando(true);
+      const { status: existingStatus } = await Location.getForegroundPermissionsAsync();
+      if (existingStatus === 'denied') return;
+
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         Alert.alert('Necesitamos acceso a tu ubicación para mostrarte el clima local');
