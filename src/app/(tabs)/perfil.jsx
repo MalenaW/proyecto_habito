@@ -1,15 +1,24 @@
-import { useContext, useState, useEffect } from 'react';
-import { View, Text, Image, Button, StyleSheet, Alert } from 'react-native';
+import { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  Button,
+  StyleSheet,
+  Alert,
+  TextInput,
+  Pressable,
+} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AuthContext } from '../../context/authContext';
-import { COLORS } from '../../constants/theme';
 import { useAuth } from '../../context/authContext';
+import { COLORS } from '../../constants/theme';
 
 export default function Perfil() {
-const { usuario,setUsuario, logout} = useAuth();
-
+  const { usuario, setUsuario, logout } = useAuth();
   const [imageUri, setImageUri] = useState(null);
+  const [editandoNombre, setEditandoNombre] = useState(false);
+  const [nuevoNombre, setNuevoNombre] = useState(usuario?.usuario || '');
 
   useEffect(() => {
     const loadImage = async () => {
@@ -44,18 +53,62 @@ const { usuario,setUsuario, logout} = useAuth();
     }
   };
 
+  const handleGuardarNombre = async () => {
+    if (!nuevoNombre.trim()) {
+      Alert.alert('Nombre inválido', 'El nombre no puede estar vacío');
+      return;
+    }
+
+    const actualizado = { ...usuario, usuario: nuevoNombre.trim() };
+    setUsuario(actualizado);
+    await AsyncStorage.setItem('usuario', JSON.stringify(actualizado));
+    setEditandoNombre(false);
+    Alert.alert('¡Listo!', 'Tu nombre fue actualizado');
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.saludo}>¡Hola {usuario?.nombre || 'Usuario'}!</Text>
-      <Image
-        source={imageUri ? { uri: imageUri } : require('../../../assets/icon.png')}
-        style={styles.image}
-      />
-      <Button title="Cambiar foto de perfil" onPress={pickImage} />
-      <Text style={styles.email}>{usuario?.email}</Text>
+      <View style={styles.card}>
+        {!editandoNombre ? (
+          <Text style={styles.saludo}>¡Hola {usuario?.usuario || 'Usuario'}!</Text>
+        ) : (
+          <>
+            <TextInput
+              style={styles.input}
+              value={nuevoNombre}
+              onChangeText={setNuevoNombre}
+              placeholder="Nuevo nombre"
+            />
+            <Pressable style={styles.blueButton} onPress={handleGuardarNombre}>
+              <Text style={styles.buttonText}>Guardar nombre</Text>
+            </Pressable>
+          </>
+        )}
 
-      <View style={styles.buttonContainer}>
-        <Button title="Cerrar sesión" onPress={logout} color={COLORS.primary} />
+        <Image
+          source={imageUri ? { uri: imageUri } : require('../../../assets/icon.png')}
+          style={styles.image}
+        />
+        <Text style={styles.email}>{usuario?.email}</Text>
+
+        <View style={styles.buttonGroup}>
+          <Pressable style={styles.blueButton} onPress={pickImage}>
+            <Text style={styles.buttonText}>Cambiar foto de perfil</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.blueButton}
+            onPress={() => setEditandoNombre(!editandoNombre)}
+          >
+            <Text style={styles.buttonText}>
+              {editandoNombre ? 'Cancelar cambio de nombre' : 'Cambiar nombre de usuario'}
+            </Text>
+          </Pressable>
+
+          <Pressable style={styles.redButton} onPress={logout}>
+            <Text style={styles.buttonText}>Cerrar sesión</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -64,30 +117,69 @@ const { usuario,setUsuario, logout} = useAuth();
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f2f6fc',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
+  card: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 25,
+    width: '90%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
   saludo: {
-    marginTop: 10,
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: COLORS.text,
+    color: COLORS.primary,
+    marginBottom: 10,
   },
   image: {
-    width: 150,
-    height: 150,
-    borderRadius: 100,
-    marginVertical: 20,
+    width: 130,
+    height: 130,
+    borderRadius: 65,
     backgroundColor: '#ddd',
+    marginVertical: 10,
   },
   email: {
     fontSize: 16,
-    marginBottom: 20,
+    color: '#444',
+    marginBottom: 10,
   },
-  buttonContainer: {
-    marginTop: 20,
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    padding: 10,
     width: '100%',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  buttonGroup: {
+    marginTop: 15,
+    width: '100%',
+    gap: 10,
+  },
+  blueButton: {
+    backgroundColor: COLORS.secondary,
+    padding: 12,
+    borderRadius: 10,
     alignItems: 'center',
+  },
+  redButton: {
+    backgroundColor: '#ff4d4d',
+    padding: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });

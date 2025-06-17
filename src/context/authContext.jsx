@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [usuarios, setUsuarios] = useState(usuariosMockInicial); // 
   const [isCargando, setIsCargando] = useState(true);
 
+
   useEffect(() => {
     const cargarUsuario = async () => {
       try {
@@ -73,4 +74,3 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
-
