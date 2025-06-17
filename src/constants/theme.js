@@ -1,8 +1,9 @@
 export const COLORS = {
-  primary: '#007AFF',
+  primary: '#15397F',
   secondary: 'rgba(80, 137, 145, 1)',
-  background:  'rgba(23, 42, 58, 1)',
-  text: 'rgba(0, 67, 70, 1)', 
+  background:  '#DFF0FF',
+  text: '#2C3E50', 
+  subtitle: '#7F8C8D',
   white: '#FFFFFF',
   black: '#000000',
   border: '#e5e5e5',

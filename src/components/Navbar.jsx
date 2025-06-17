@@ -19,12 +19,12 @@ export default function Navbar() {
           <FontAwesome5
             name={ruta.icono}
             size={24}
-            color={pathname === ruta.ruta ? COLORS.white : COLORS.secondary}
+            color={pathname === ruta.ruta ? COLORS.primary : COLORS.secondary}
           />
           <Text
             style={[
               styles.tabText,
-              { color: pathname === ruta.ruta ? COLORS.white : COLORS.secondary },
+              { color: pathname === ruta.ruta ? COLORS.primary : COLORS.secondary },
             ]}
           >
             {ruta.nombre}
@@ -39,14 +39,17 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: COLORS.background,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.border,
     height: 60,
-    padding: 5,
+    padding: 10,
     position: 'absolute',
     bottom: 15,
     left: 0,
     right: 0,
+    borderRadius: 30,
+    borderWidth: 4,
+    borderColor: COLORS.primary,
+    borderBottomWidth: 0.50,
+    borderTopWidth: 0.5,
   },
   tab: {
     flex: 1,
