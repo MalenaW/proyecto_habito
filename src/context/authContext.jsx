@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { usuariosMockInicial } from '../data/usuariosMock';
 
@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null); // 
   const [usuarios, setUsuarios] = useState(usuariosMockInicial); // 
   const [isCargando, setIsCargando] = useState(true);
+
 
   useEffect(() => {
     const cargarUsuario = async () => {
@@ -66,11 +67,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, login, register, logout, isCargando }}>
+    <AuthContext.Provider value={{ usuario, login, register, logout, isCargando,setUsuario }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => useContext(AuthContext);
-
