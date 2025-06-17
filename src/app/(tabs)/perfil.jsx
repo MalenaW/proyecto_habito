@@ -3,11 +3,10 @@ import {
   View,
   Text,
   Image,
-  Button,
-  StyleSheet,
   Alert,
   TextInput,
   Pressable,
+  StyleSheet,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,7 +14,7 @@ import { useAuth } from '../../context/authContext';
 import { COLORS } from '../../constants/theme';
 
 export default function Perfil() {
-  const { usuario, setUsuario, logout } = useAuth();
+  const { usuario, setUsuario, usuarios, setUsuarios, logout } = useAuth();
   const [imageUri, setImageUri] = useState(null);
   const [editandoNombre, setEditandoNombre] = useState(false);
   const [nuevoNombre, setNuevoNombre] = useState(usuario?.usuario || '');
@@ -61,7 +60,17 @@ export default function Perfil() {
 
     const actualizado = { ...usuario, usuario: nuevoNombre.trim() };
     setUsuario(actualizado);
+
+   
+    const nuevosUsuarios = usuarios.map((u) =>
+      u.email === actualizado.email ? actualizado : u
+    );
+    setUsuarios(nuevosUsuarios);
+
+   
     await AsyncStorage.setItem('usuario', JSON.stringify(actualizado));
+    await AsyncStorage.setItem('usuarios', JSON.stringify(nuevosUsuarios));
+
     setEditandoNombre(false);
     Alert.alert('¡Listo!', 'Tu nombre fue actualizado');
   };
