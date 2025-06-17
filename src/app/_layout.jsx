@@ -2,6 +2,7 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import React, { useEffect } from 'react';
 import { AuthProvider, useAuth } from '../context/authContext';
 import { View, Text } from 'react-native';
+import { HabitosProvider } from '../context/habitoContext';
 
 
 function ProtectedLayout() {
@@ -34,7 +35,10 @@ if (isCargando) {
 export default function LayoutPrincipal() {
   return (
     <AuthProvider>
-      <ProtectedLayout />
+      <HabitosProvider>
+         <ProtectedLayout />
+      </HabitosProvider>
+  
     </AuthProvider>
   );
 }
