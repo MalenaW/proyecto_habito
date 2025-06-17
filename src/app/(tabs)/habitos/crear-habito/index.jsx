@@ -1,63 +1,50 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, Button, TouchableOpacity,
-  StyleSheet, ScrollView,
-  Pressable
+  View, Text, TextInput, TouchableOpacity,
+  StyleSheet,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-
-import { Link, useRouter } from 'expo-router';
-import { Alert } from 'react-native';
-import { COLORS } from '../../constants/theme';
-import CrearHabitos from '../../components/habitos/crearHabitos';
-import { useHabitos } from '../../context/habitoContext';
+import { useRouter } from 'expo-router';
+import { COLORS } from '../../../../constants/theme';
+import CrearHabitos from '../../../../components/habitos/crearHabitos';
+import { useHabitos } from '../../../../context/habitoContext';
 
 export default function CrearHabito(){
-
-  
-
-    const link = {
-       href: '/habito', label:' Volver'
-     }
-      const router = useRouter();
-         const [nombre, setNombre] = useState('');
-         const [motivacion, setMotivacion] = useState('');
-         const [dias, setDias] = useState([]);
-         const { agregarHabito } = useHabitos();
+  const router = useRouter();
+  const [nombre, setNombre] = useState('');
+  const [motivacion, setMotivacion] = useState('');
+  const [dias, setDias] = useState([]);
+  const { agregarHabito } = useHabitos();
         
-     
-       const diasSemana = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
-     
-       const toggleDia = (dia) => {
-         setDias(prev =>
-           prev.includes(dia) ? prev.filter(d => d !== dia) : [...prev, dia]
-         );
-       };
-     
-       const handleGuardar = () => {
-         const fechaHoy = new Date().toISOString().split('T')[0];
-     
-         agregarHabito({
-           nombre,
-           motivacion,
-           dias: [fechaHoy], 
-           repeticionesPorDia: 1,
-           fechaInicio: fechaHoy
-         });
-     
-         router.replace('/habito')
-        }
+
+  const diasSemana = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
+
+  const toggleDia = (dia) => {
+    setDias(prev =>
+      prev.includes(dia) ? prev.filter(d => d !== dia) : [...prev, dia]
+    );
+  };
+
+  const handleGuardar = () => {
+    const fechaHoy = new Date().toISOString().split('T')[0];
+
+    agregarHabito({
+      nombre,
+      motivacion,
+      dias: [fechaHoy], 
+      repeticionesPorDia: 1,
+      fechaInicio: fechaHoy
+    });
+
+    router.replace('/habitos')
+  }
      
  
   return(
-  
-      <View style = {styles.container}>
-          <Text style={{ fontWeight: 'bold' }}>Nombre del hábito</Text>
+    <View style = {styles.container}>
+      <Text style={{ fontWeight: 'bold' }}>Nombre del hábito</Text>
       <TextInput value={nombre} onChangeText={setNombre} style={{ borderBottomWidth: 1 }} />
-
       <Text style={{ marginTop: 16, fontWeight: 'bold' }}>Motivación</Text>
       <TextInput value={motivacion} onChangeText={setMotivacion} style={{ borderBottomWidth: 1 }} />
-
       <Text style={{ marginTop: 16, fontWeight: 'bold' }}>Días</Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
         {diasSemana.map(dia => (

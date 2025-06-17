@@ -52,6 +52,10 @@ export default function Home() {
       fontSize: 18,
       color: COLORS.text
     },
+    logo: {
+      width:250,
+      height: 250,
+    },
     actionContainer: {
       backgroundColor: COLORS.white,
       padding: 20,
@@ -92,7 +96,7 @@ export default function Home() {
       <Image source={require('../../../assets/planning.png')} style={styles.logo} />
       <View style={styles.actionContainer}>
         <Text style={styles.bienvenida}>Establece metas diarias, cuida tu bienestar</Text>
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/crearHabito')}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/habitos/crear-habito')}>
           <Text style={styles.buttonText}>Agregar Hábito</Text>
         </TouchableOpacity>
         </View>

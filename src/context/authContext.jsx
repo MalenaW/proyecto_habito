@@ -1,29 +1,34 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { usuariosMockInicial } from '../data/usuariosMock';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [usuario, setUsuario] = useState(null); // 
-  const [usuarios, setUsuarios] = useState(usuariosMockInicial); // 
+  const [usuario, setUsuario] = useState(null);
+  const [usuarios, setUsuarios] = useState(usuariosMockInicial);
   const [isCargando, setIsCargando] = useState(true);
 
   useEffect(() => {
-    const cargarUsuario = async () => {
+    const cargarDatos = async () => {
       try {
         const guardado = await AsyncStorage.getItem('usuario');
+        const listaGuardada = await AsyncStorage.getItem('usuarios');
         if (guardado) {
+           const usuarioCargado = JSON.parse(guardado);
           setUsuario(JSON.parse(guardado));
+             }
+        if (listaGuardada) {
+          setUsuarios(JSON.parse(listaGuardada));
         }
       } catch (error) {
-        Alert.alert("Error", "No se pudo cargar la sesión");
+        Alert.alert("Error", "No se pudieron cargar los datos");
       } finally {
         setIsCargando(false);
       }
     };
-    cargarUsuario();
+    cargarDatos();
   }, []);
 
   const login = async (usuarioInput, passwordInput) => {
@@ -58,6 +63,7 @@ export const AuthProvider = ({ children }) => {
     setUsuarios(nuevosUsuarios);
     setUsuario(nuevoUsuario);
     await AsyncStorage.setItem('usuario', JSON.stringify(nuevoUsuario));
+    await AsyncStorage.setItem('usuarios', JSON.stringify(nuevosUsuarios));
   };
 
   const logout = async () => {
@@ -66,11 +72,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, login, register, logout, isCargando }}>
+    <AuthContext.Provider value={{
+      usuario,
+      setUsuario,
+      usuarios,
+      setUsuarios,
+      login,
+      register,
+      logout,
+      isCargando
+    }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => useContext(AuthContext);
-

@@ -29,7 +29,7 @@ export default function CrearHabitos(){
       fechaInicio: fechaHoy
     });
 
-    router.replace('/app/(tabs)/habito');
+    router.replace('/habitos');
   };
 
     return( 

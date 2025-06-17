@@ -1,26 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,  } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity, StyleSheet, 
-  Alert, Modal, Pressable, Button
 } from 'react-native';
-import { useRouter, useLocalSearchParams, Link } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../../constants/theme';
-import CardDeHabito from '../../components/habitos/cardDeHabito';
-import Calendario from '../../components/calendario'
-import { useHabitos } from '../../context/habitoContext';
+import { useRouter } from 'expo-router';
+import { COLORS } from '../../../constants/theme';
+import { useHabitos } from '../../../context/habitoContext';
 import { Calendar } from 'react-native-calendars';
 
 export default function Habitos (){
+  const link = {
+        href: '/crearHabito', label: 'Agregar Hábitos'
+  }
+  const [fechaSeleccionada, setFechaSeleccionada] = useState('');
+  const { habitos } = useHabitos();
+  const router = useRouter();
 
-const link = {
-       href: '/crearHabito', label: 'Agregar Hábitos'
-      }
-const [fechaSeleccionada, setFechaSeleccionada] = useState('');
-const { habitos } = useHabitos();
-const router = useRouter();
-
-const habitosFiltrados = habitos.filter(h => h.dias.includes(fechaSeleccionada));
+  const habitosFiltrados = habitos.filter(h => h.dias.includes(fechaSeleccionada));
 
 return (
     <View style={{ flex: 1, padding: 16 }}>
@@ -46,7 +41,7 @@ return (
         )}
       />
       <TouchableOpacity
-        onPress={() => console.log(router.push('/crearHabito') )}
+        onPress={() => console.log(router.push('/habitos/crear-habito') )}
         style={{ marginTop: 20, backgroundColor: '#007bff', padding: 10, borderRadius: 5 }}
       >
         <Text style={{ color: '#fff', textAlign: 'center' }}>Agregar Hábito</Text>
