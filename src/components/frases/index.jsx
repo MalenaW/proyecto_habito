@@ -2,7 +2,7 @@ import { View, Text } from 'react-native';
 import { useState, useEffect } from 'react';
 import GetFrases from './getFrases';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { translate } from '@vitalets/google-translate-api';
+//import { translate } from '@vitalets/google-translate-api';
 
 
 export default function Frases() {
@@ -40,8 +40,8 @@ export default function Frases() {
     obtenerFraseDelDia();
   }, []);
 
-  if (!frase) return null;
-  const { text } =  translate(frase.q, { to: 'es' });
+if (!frase) return null;
+ // const { text } =  translate(frase.q, { to: 'es' });
 
   return (
     <View style={{ marginTop: 20, paddingHorizontal: 20 }}>

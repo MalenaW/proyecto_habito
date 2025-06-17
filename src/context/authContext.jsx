@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { usuariosMockInicial } from '../data/usuariosMock';
 
@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, login, register, logout, isCargando }}>
+    <AuthContext.Provider value={{ usuario, login, register, logout, isCargando,setUsuario }}>
       {children}
     </AuthContext.Provider>
   );
