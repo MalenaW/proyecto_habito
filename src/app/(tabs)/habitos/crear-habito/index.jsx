@@ -1,22 +1,20 @@
-import React, { useState } from 'react';
-import {
-  View, Text, TextInput, TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { COLORS } from '../../../../constants/theme';
-import CrearHabitos from '../../../../components/habitos/crearHabitos';
-import { useHabitos } from '../../../../context/habitoContext';
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useState } from "react";
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useHabitos } from "../../../../context/habitoContext";
+import { COLORS } from "../../../../constants/theme";
+import { format, startOfToday } from "date-fns";
 
 export default function CrearHabito(){
-  const router = useRouter();
-  const [nombre, setNombre] = useState('');
-  const [motivacion, setMotivacion] = useState('');
-  const [dias, setDias] = useState([]);
-  const { agregarHabito } = useHabitos();
-        
+    const router = useRouter();
+    const [nombre, setNombre] = useState('');
+    const [dias, setDias] = useState([]);
+    const { agregarHabito } = useHabitos();
+    const params = useLocalSearchParams();
+    const diasSemana = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
 
-  const diasSemana = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
+    const fecha = startOfToday(params.fechaSeleccionada);
+    const fechaInicio = format(fecha, 'dd/MM/yyyy');
 
   const toggleDia = (dia) => {
     setDias(prev =>
@@ -25,26 +23,20 @@ export default function CrearHabito(){
   };
 
   const handleGuardar = () => {
-    const fechaHoy = new Date().toISOString().split('T')[0];
-
     agregarHabito({
       nombre,
-      motivacion,
-      dias: [fechaHoy], 
+      dias,
       repeticionesPorDia: 1,
-      fechaInicio: fechaHoy
+      fechaInicio: params.fechaSeleccionada
     });
 
-    router.replace('/habitos')
-  }
-     
- 
-  return(
-    <View style = {styles.container}>
+    router.replace('/habitos');
+  };
+
+    return( 
+     <View style={styles.container}>
       <Text style={{ fontWeight: 'bold' }}>Nombre del hábito</Text>
-      <TextInput value={nombre} onChangeText={setNombre} style={{ borderBottomWidth: 1 }} />
-      <Text style={{ marginTop: 16, fontWeight: 'bold' }}>Motivación</Text>
-      <TextInput value={motivacion} onChangeText={setMotivacion} style={{ borderBottomWidth: 1 }} />
+      <TextInput value={nombre} onChangeText={(text) => setNombre(text)} style={{ borderBottomWidth: 1, width: '80%' }} />
       <Text style={{ marginTop: 16, fontWeight: 'bold' }}>Días</Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
         {diasSemana.map(dia => (
@@ -62,36 +54,28 @@ export default function CrearHabito(){
           </TouchableOpacity>
         ))}
       </View>
+      <Text style={{ color: COLORS.primary, textAlign: 'center', fontSize: 16, fontWeight: 'bold', marginTop: 20 }}>
+        Fecha de inicio: {fechaInicio}
+      </Text>
 
       <TouchableOpacity
         onPress={handleGuardar}
-        style={{ marginTop: 30, backgroundColor: 'green', padding: 10, borderRadius: 5 }}
+        disabled={!nombre}
+        style={{ marginTop: 30, backgroundColor: 'green' ,opacity: !nombre ? 0.5 : 1, padding: 10, borderRadius: 5 }}
       >
         <Text style={{ color: 'white', textAlign: 'center' }}>Guardar hábito</Text>
       </TouchableOpacity>
-      <CrearHabitos/>
-      </View>
-  )
+    </View> 
+    )
 }
 
 const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-        backgroundColor: COLORS.background
-    },
-    button:{
-        backgroundColor: '#2195f3',
-        paddingVertical: 12,
-        paddingHorizontal: 25,
-        borderRadius: 8,
-        marginBottom: 15,
-        minWidth:200
-    },
-    buttonText:{
-        color: 'white',
-        fontSize: 18,
-    }
+  container: {
+    flex: 1,
+    padding: 35,
+    backgroundColor: COLORS.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
 })

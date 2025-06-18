@@ -6,16 +6,15 @@ import { useRouter } from 'expo-router';
 import { COLORS } from '../../../constants/theme';
 import { useHabitos } from '../../../context/habitoContext';
 import { Calendar } from 'react-native-calendars';
+import { format } from 'date-fns';
 
 export default function Habitos (){
-  const link = {
-        href: '/crearHabito', label: 'Agregar Hábitos'
-  }
-  const [fechaSeleccionada, setFechaSeleccionada] = useState('');
+  const hoy = format(new Date(), 'yyyy-MM-dd');
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(hoy);
   const { habitos } = useHabitos();
   const router = useRouter();
 
-  const habitosFiltrados = habitos.filter(h => h.dias.includes(fechaSeleccionada));
+  const habitosFiltrados = habitos.filter(h => h.fechaInicio === fechaSeleccionada);
 
 return (
     <View style={{ flex: 1, padding: 16 }}>
@@ -30,6 +29,9 @@ return (
           }
         }}
       />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>  
+        {habitosFiltrados.length === 0 && <Text>No hay hábitos para este día</Text>}
+      </View>
       
       <FlatList
         data={habitosFiltrados}
@@ -41,7 +43,10 @@ return (
         )}
       />
       <TouchableOpacity
-        onPress={() => console.log(router.push('/habitos/crear-habito') )}
+        onPress={() => router.push({
+          pathname: '/habitos/crear-habito',
+          params: { fechaSeleccionada }
+        })}
         style={{ marginTop: 20, backgroundColor: '#007bff', padding: 10, borderRadius: 5 }}
       >
         <Text style={{ color: '#fff', textAlign: 'center' }}>Agregar Hábito</Text>

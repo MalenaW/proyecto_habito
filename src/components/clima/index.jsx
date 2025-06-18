@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, Image, StyleSheet, ActivityIndicator, Alert } from 'react-native'
 import { GetClima } from './getClima';
 import { useState, useEffect } from 'react';
 import { COLORS } from '../../constants/theme';
@@ -15,18 +15,22 @@ export default function Clima() {
     try {
       setEstaCargando(true);
       const { status: existingStatus } = await Location.getForegroundPermissionsAsync();
-      if (existingStatus === 'denied') return;
-
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Necesitamos acceso a tu ubicación para mostrarte el clima local');
-        return;
+      
+      if (existingStatus !== 'granted') {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permisos requeridos', 'Se necesitan permisos de ubicación para mostrar el clima');
+          return;
+        }
       }
 
       const locCoords = await Location.getCurrentPositionAsync({});
       setLocation(locCoords);
     } catch (error) {
       console.error("Error al obtener la ubicación", error);
+      Alert.alert('Error', 'No se pudo obtener la ubicación. Verifica que tengas GPS activado.');
+    } finally {
+      setEstaCargando(false);
     }
   };
 
@@ -82,16 +86,18 @@ export default function Clima() {
   });
 
   return (
-    <View style={styles.container}>
-      {estaCargando ? <ActivityIndicator size="large" color={COLORS.primary} /> : (
-        <View style={styles.climaContainer}>
-          <Image source={{ uri: `https://openweathermap.org/img/wn/${clima?.weather[0]?.icon}.png` }} style={{ width: 50, height: 50 }} />
-          <View >
-            <Text style={styles.texto}>{clima?.main?.temp}°C</Text>
-            <Text style={styles.texto}>{clima?.weather[0]?.description}</Text>
+    clima && (
+      <View style={styles.container}>
+        {estaCargando ? <ActivityIndicator size="large" color={COLORS.primary} /> : (
+          <View style={styles.climaContainer}>
+            <Image source={{ uri: `https://openweathermap.org/img/wn/${clima?.weather[0]?.icon}.png` }} style={{ width: 50, height: 50 }} />
+            <View >
+              <Text style={styles.texto}>{clima?.main?.temp}°C</Text>
+              <Text style={styles.texto}>{clima?.weather[0]?.description}</Text>
+            </View>
           </View>
+        )}
       </View>
-      )}
-    </View>
-  )
+    )
+  );
 }
