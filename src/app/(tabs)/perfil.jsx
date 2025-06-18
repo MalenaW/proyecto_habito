@@ -61,18 +61,43 @@ export default function Perfil() {
     const actualizado = { ...usuario, usuario: nuevoNombre.trim() };
     setUsuario(actualizado);
 
-   
     const nuevosUsuarios = usuarios.map((u) =>
       u.email === actualizado.email ? actualizado : u
     );
     setUsuarios(nuevosUsuarios);
 
-   
     await AsyncStorage.setItem('usuario', JSON.stringify(actualizado));
     await AsyncStorage.setItem('usuarios', JSON.stringify(nuevosUsuarios));
 
     setEditandoNombre(false);
     Alert.alert('¡Listo!', 'Tu nombre fue actualizado');
+  };
+
+  const handleBorrarCuenta = async () => {
+   
+    Alert.alert(
+      '¿Estás segura/o?',
+      'Esta acción eliminará tu cuenta permanentemente.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Sí, borrar',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const usuariosActualizados = usuarios.filter(u => u.email !== usuario.email);
+              setUsuarios(usuariosActualizados);
+              await AsyncStorage.setItem('usuarios', JSON.stringify(usuariosActualizados));
+              await AsyncStorage.removeItem('usuario');
+              await AsyncStorage.removeItem('profileImage');
+              setUsuario(null);
+            } catch (error) {
+              Alert.alert('Error', 'No se pudo borrar la cuenta');
+            }
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -116,6 +141,10 @@ export default function Perfil() {
 
           <Pressable style={styles.redButton} onPress={logout}>
             <Text style={styles.buttonText}>Cerrar sesión</Text>
+          </Pressable>
+
+          <Pressable style={styles.deleteButton} onPress={handleBorrarCuenta}>
+            <Text style={styles.buttonText}>Borrar cuenta</Text>
           </Pressable>
         </View>
       </View>
@@ -182,7 +211,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   redButton: {
-    backgroundColor: '#ff4d4d',
+    backgroundColor: COLORS.primary,
+    padding: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  deleteButton: {
+    backgroundColor: COLORS.bordo,
     padding: 12,
     borderRadius: 10,
     alignItems: 'center',
