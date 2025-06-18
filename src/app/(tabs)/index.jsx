@@ -96,7 +96,7 @@ export default function Home() {
       <Image source={require('../../../assets/planning.png')} style={styles.logo} />
       <View style={styles.actionContainer}>
         <Text style={styles.bienvenida}>Establece metas diarias, cuida tu bienestar</Text>
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/habitos/agregar-habitos')}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/habitos')}>
           <Text style={styles.buttonText}>Agregar Hábito</Text>
         </TouchableOpacity>
         </View>

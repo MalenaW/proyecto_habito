@@ -25,7 +25,7 @@ export default function Perfil() {
         const savedImage = await AsyncStorage.getItem('profileImage');
         if (savedImage) setImageUri(savedImage);
       } catch (error) {
-        console.log('Error cargando imagen:', error);
+        console.error('Error cargando imagen:', error);
       }
     };
     loadImage();
