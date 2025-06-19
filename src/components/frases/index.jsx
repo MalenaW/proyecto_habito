@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import GetFrases from './getFrases';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS } from '../../constants/theme';
-
+import { TouchableOpacity } from 'react-native'; 
 export default function Frases() {
   const [frase, setFrase] = useState(null);
 
@@ -41,12 +41,32 @@ export default function Frases() {
 
   if (!frase) return null;
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.frase}>{frase.q}</Text>
-      <Text style={styles.autor}>– {frase.a}</Text>
-    </View>
-  );
+ return (
+  <View style={styles.container}>
+    <Text style={styles.frase}>{frase.q}</Text>
+    <Text style={styles.autor}>– {frase.a}</Text>
+
+    <TouchableOpacity onPress={async () => {
+      try {
+        const favoritasPrevias = await AsyncStorage.getItem('frasesFavoritas');
+        const favoritas = favoritasPrevias ? JSON.parse(favoritasPrevias) : [];
+
+        const yaExiste = favoritas.some(f => f.q === frase.q && f.a === frase.a);
+        if (!yaExiste) {
+          favoritas.push(frase);
+          await AsyncStorage.setItem('frasesFavoritas', JSON.stringify(favoritas));
+          alert('Frase agregada a favoritos');
+        } else {
+          alert('La frase ya está en tus favoritos');
+        }
+      } catch (error) {
+        console.error('Error al guardar frase favorita', error);
+      }
+    }}>
+      <Text style={{ color: 'green', marginTop: 10 }}>💚 Marcar como favorita</Text>
+    </TouchableOpacity>
+  </View>
+);
 }
 
 const styles = StyleSheet.create({
