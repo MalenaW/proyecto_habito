@@ -3,11 +3,33 @@ import { GetClima } from './getClima';
 import { useState, useEffect } from 'react';
 import { COLORS } from '../../constants/theme';
 import * as Location from 'expo-location';
+import { climaCache } from './climaCache';
 
 export default function Clima() {
   const [clima, setClima] = useState(null);
   const [location, setLocation] = useState(null);
   const [estaCargando, setEstaCargando] = useState(false);
+  
+  useEffect(() => {
+    pedirClima();
+  }, []);
+
+  useEffect(() => {
+    if (location && !clima) {
+      getClima();
+    }
+  }, [location]);
+
+  const pedirClima = async () => {
+    const datosCache = await climaCache.cargar();
+    
+    if (datosCache) {
+      setClima(datosCache.clima);
+      setLocation(datosCache.location);
+    } else {
+      getLocation();
+    }
+  };
 
 
   const getLocation = async () => {
@@ -19,7 +41,6 @@ export default function Clima() {
       if (existingStatus !== 'granted') {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
-          Alert.alert('Permisos requeridos', 'Se necesitan permisos de ubicación para mostrar el clima');
           return;
         }
       }
@@ -37,22 +58,19 @@ export default function Clima() {
   const getClima = async () => {
     if(!location) return;
     try{
-      const clima = await GetClima(location.coords.latitude, location.coords.longitude);
-      setClima(clima);
+      setEstaCargando(true);
+      const climaData = await GetClima(location.coords.latitude, location.coords.longitude);
+      setClima(climaData);
+      
+      await climaCache.guardar(climaData, location);
+      
     } catch (error) {
       console.error("Error al obtener el clima", error);
-    }finally{
+    } finally {
       setEstaCargando(false);
     }
-  }
-  useEffect(() => {
-    getLocation();
-  }, []);
-
-  useEffect(() => {
-    getClima();
-  }, [location]);
-
+  };
+  
   const styles = StyleSheet.create({
     container: {
       backgroundColor: COLORS.white,
@@ -84,6 +102,7 @@ export default function Clima() {
       textTransform: 'capitalize',
     },
   });
+  const climaRedondeado = Math.round(clima?.main?.temp);
 
   return (
     clima && (
@@ -92,7 +111,7 @@ export default function Clima() {
           <View style={styles.climaContainer}>
             <Image source={{ uri: `https://openweathermap.org/img/wn/${clima?.weather[0]?.icon}.png` }} style={{ width: 50, height: 50 }} />
             <View >
-              <Text style={styles.texto}>{clima?.main?.temp}°C</Text>
+              <Text style={styles.texto}>{climaRedondeado}°C</Text>
               <Text style={styles.texto}>{clima?.weather[0]?.description}</Text>
             </View>
           </View>
