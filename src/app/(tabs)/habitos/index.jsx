@@ -6,15 +6,40 @@ import { useRouter } from 'expo-router';
 import { COLORS } from '../../../constants/theme';
 import { useHabitos } from '../../../context/habitoContext';
 import { Calendar } from 'react-native-calendars';
-import { format } from 'date-fns';
+import { format, getDay, isAfter , parseISO} from 'date-fns';
+import HabitoItem from '../../../components/habito';
 
 export default function Habitos (){
   const hoy = format(new Date(), 'yyyy-MM-dd');
   const [fechaSeleccionada, setFechaSeleccionada] = useState(hoy);
-  const { habitos } = useHabitos();
+  const { habitos, eliminarHabito, editarHabito } = useHabitos();
   const router = useRouter();
 
-  const habitosFiltrados = habitos.filter(h => h.fechaInicio === fechaSeleccionada);
+  const habitosFiltrados = habitos.filter(h => {
+    const fechaSeleccionadaDate = parseISO(fechaSeleccionada);
+    const fechaInicioHabito = parseISO(h.fechaInicio);
+    
+    if (isAfter(fechaInicioHabito, fechaSeleccionadaDate)) {
+      return false;
+    }
+    
+    const diaSeleccionado = getDay(fechaSeleccionadaDate);
+    const diasSemanaMap = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+    const diaString = diasSemanaMap[diaSeleccionado];
+    
+    return h.dias.includes(diaString);
+  });
+
+  const handleEdit = (habito) => {
+    router.push({
+      pathname: '/habitos/crear-habito',  
+      params: { 
+        habitoId: habito.id,              
+        fechaSeleccionada,                
+      }
+    });
+  };
+
 
 return (
     <View style={{ flex: 1, padding: 16 }}>
@@ -36,20 +61,16 @@ return (
       <FlatList
         data={habitosFiltrados}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <View style={{ padding: 10, backgroundColor: '#eee', marginVertical: 5 }}>
-            <Text>{item.nombre}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => <HabitoItem item={item} onEdit={handleEdit} onDelete={eliminarHabito} />}
       />
       <TouchableOpacity
         onPress={() => router.push({
           pathname: '/habitos/crear-habito',
           params: { fechaSeleccionada }
         })}
-        style={{ marginTop: 20, backgroundColor: '#007bff', padding: 10, borderRadius: 5 }}
+        style={styles.boton}
       >
-        <Text style={{ color: '#fff', textAlign: 'center' }}>Agregar Hábito</Text>
+        <Text style={styles.botonTexto}>Agregar Hábito</Text>
       </TouchableOpacity>
 
     </View>
@@ -66,19 +87,22 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 20,
-        backgroundColor: COLORS.background
+  },
+  item: {
+    padding: 10,
+    backgroundColor: '#eee',
+    marginVertical: 5,
+    borderRadius: 5,
+  },
+  boton: {
+    marginTop: 20,
+    backgroundColor: COLORS.secondary,
+    padding: 10,
+    borderRadius: 5,
     },
-    button:{
-        backgroundColor: '#2195f3',
-        paddingVertical: 12,
-        paddingHorizontal: 25,
-        borderRadius: 8,
-        marginBottom: 15,
-        minWidth:200
-    },
-    buttonText:{
-        color: 'white',
-        fontSize: 18,
-    }
-})
+  botonTexto: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+});
