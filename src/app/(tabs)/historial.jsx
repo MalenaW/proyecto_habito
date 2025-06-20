@@ -2,6 +2,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native
 import { COLORS } from '../../constants/theme';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Historial() {
   const [favoritas, setFavoritas] = useState([]);
@@ -28,7 +29,7 @@ export default function Historial() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.titulo}>Historial de hábitos</Text>
       <Text style={styles.subtitulo}>Frases favoritas:</Text>
 
@@ -51,7 +52,7 @@ export default function Historial() {
           )}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

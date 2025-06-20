@@ -1,67 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState,  } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity, StyleSheet,
+  View, Text, FlatList, TouchableOpacity, StyleSheet, 
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { COLORS } from '../../../constants/theme';
 import { useHabitos } from '../../../context/habitoContext';
 import { Calendar } from 'react-native-calendars';
-import { format } from 'date-fns';
+import { format, getDay, isAfter , parseISO} from 'date-fns';
+import HabitoItem from '../../../components/habito';
 
-export default function Habitos() {
+export default function Habitos (){
   const hoy = format(new Date(), 'yyyy-MM-dd');
   const [fechaSeleccionada, setFechaSeleccionada] = useState(hoy);
-  const { habitos } = useHabitos();
+  const { habitos, eliminarHabito, editarHabito } = useHabitos();
   const router = useRouter();
 
-  const habitosFiltrados = habitos.filter(h => h.fechaInicio === fechaSeleccionada);
-
-  const fechasConHabitos = habitos.reduce((acc, habito) => {
-    if (!acc[habito.fechaInicio]) {
-      acc[habito.fechaInicio] = {
-        marked: true,
-        dotColor: 'green', 
-      };
+  const habitosFiltrados = habitos.filter(h => {
+    const fechaSeleccionadaDate = parseISO(fechaSeleccionada);
+    const fechaInicioHabito = parseISO(h.fechaInicio);
+    
+    if (isAfter(fechaInicioHabito, fechaSeleccionadaDate)) {
+      return false;
     }
-    return acc;
-  }, {});
+    
+    const diaSeleccionado = getDay(fechaSeleccionadaDate);
+    const diasSemanaMap = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+    const diaString = diasSemanaMap[diaSeleccionado];
+    
+    return h.dias.includes(diaString);
+  });
 
-  if (fechasConHabitos[fechaSeleccionada]) {
-    fechasConHabitos[fechaSeleccionada] = {
-      ...fechasConHabitos[fechaSeleccionada],
-      selected: true,
-      selectedColor: 'blue',
-    };
-  } else {
-    fechasConHabitos[fechaSeleccionada] = {
-      selected: true,
-      selectedColor: 'blue',
-    };
-  }
+  const handleEdit = (habito) => {
+    router.push({
+      pathname: '/habitos/crear-habito',  
+      params: { 
+        habitoId: habito.id,              
+        fechaSeleccionada,                
+      }
+    });
+  };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.titulo}>Hábitos del día</Text>
 
+return (
+    <View style={{ flex: 1, padding: 16 }}>
+      <Text style={{ fontWeight: 'bold', fontSize: 20, marginTop: 20 , alignContent: "center"}}>Hábitos del día</Text>
       <Calendar
         onDayPress={(day) => setFechaSeleccionada(day.dateString)}
-        markedDates={fechasConHabitos}
+        markedDates={{
+          [fechaSeleccionada]: {
+            selected: true,
+            marked: true,
+            selectedColor: 'blue'
+          }
+        }}
       />
-
-      <View style={styles.mensaje}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>  
         {habitosFiltrados.length === 0 && <Text>No hay hábitos para este día</Text>}
       </View>
-
+      
       <FlatList
         data={habitosFiltrados}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text>{item.nombre}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => <HabitoItem item={item} onEdit={handleEdit} onDelete={eliminarHabito} />}
       />
-
       <TouchableOpacity
         onPress={() => router.push({
           pathname: '/habitos/crear-habito',
@@ -71,26 +72,21 @@ export default function Habitos() {
       >
         <Text style={styles.botonTexto}>Agregar Hábito</Text>
       </TouchableOpacity>
+
     </View>
+
   );
 }
 
+
+
+
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: COLORS.white,
-  },
-  titulo: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    marginTop: 20,
-    alignSelf: 'center',
-  },
-  mensaje: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    container:{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
   },
   item: {
     padding: 10,
@@ -103,7 +99,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.secondary,
     padding: 10,
     borderRadius: 5,
-  },
+    },
   botonTexto: {
     color: '#fff',
     textAlign: 'center',
