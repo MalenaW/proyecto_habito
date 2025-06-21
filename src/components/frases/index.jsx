@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useState, useEffect } from 'react';
 import GetFrases from './getFrases';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 import { COLORS } from '../../constants/theme';
 import { TouchableOpacity } from 'react-native'; 
 export default function Frases() {
@@ -46,23 +47,23 @@ export default function Frases() {
     <Text style={styles.frase}>{frase.q}</Text>
     <Text style={styles.autor}>– {frase.a}</Text>
 
-    <TouchableOpacity onPress={async () => {
-      try {
-        const favoritasPrevias = await AsyncStorage.getItem('frasesFavoritas');
-        const favoritas = favoritasPrevias ? JSON.parse(favoritasPrevias) : [];
+   <TouchableOpacity onPress={async () => {
+  try {
+    const favoritasPrevias = await AsyncStorage.getItem('frasesFavoritas');
+    const favoritas = favoritasPrevias ? JSON.parse(favoritasPrevias) : [];
 
-        const yaExiste = favoritas.some(f => f.q === frase.q && f.a === frase.a);
-        if (!yaExiste) {
-          favoritas.push(frase);
-          await AsyncStorage.setItem('frasesFavoritas', JSON.stringify(favoritas));
-          alert('Frase agregada a favoritos');
-        } else {
-          alert('La frase ya está en tus favoritos');
-        }
-      } catch (error) {
-        console.error('Error al guardar frase favorita', error);
-      }
-    }}>
+    const yaExiste = favoritas.some(f => f.q === frase.q && f.a === frase.a);
+    if (!yaExiste) {
+      favoritas.push(frase);
+      await AsyncStorage.setItem('frasesFavoritas', JSON.stringify(favoritas));
+      Alert.alert('', 'Frase agregada a favoritos', [{ text: 'OK' }]);  
+    } else {
+      Alert.alert('', 'La frase ya está en tus favoritos', [{ text: 'OK' }]); 
+    }
+  } catch (error) {
+    console.error('Error al guardar frase favorita', error);
+  }
+}}>
       <Text style={{ color: 'green', marginTop: 10 }}>💚 Marcar como favorita</Text>
     </TouchableOpacity>
   </View>

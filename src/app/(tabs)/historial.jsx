@@ -3,6 +3,9 @@ import { COLORS } from '../../constants/theme';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Videos from '../../components/videos';
+import Recetas from '../../components/recetas';
+
 
 export default function Historial() {
   const [favoritas, setFavoritas] = useState([]);
@@ -30,7 +33,7 @@ export default function Historial() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.titulo}>Historial de hábitos</Text>
+      <Text style={styles.titulo}>Bienestar</Text>
       <Text style={styles.subtitulo}>Frases favoritas:</Text>
 
       {favoritas.length === 0 ? (
@@ -52,6 +55,8 @@ export default function Historial() {
           )}
         />
       )}
+<Videos /> 
+      <Recetas />
     </SafeAreaView>
   );
 }
@@ -70,7 +75,7 @@ const styles = StyleSheet.create({
   subtitulo: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.text,
+    color: COLORS.secondary,
     marginBottom: 10,
   },
   fraseItem: {
