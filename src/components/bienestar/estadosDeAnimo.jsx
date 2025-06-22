@@ -36,7 +36,6 @@ export default function EstadosAnimo() {
           style: 'destructive',
           onPress: async () => {
             await eliminarEstado(hoy);
-            Alert.alert('', 'Estado eliminado');
           }
         }
       ]
