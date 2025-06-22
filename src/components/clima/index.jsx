@@ -1,3 +1,4 @@
+// src/components/clima/index.jsx - VERSIÓN COMPACTA
 import { View, Text, Image, StyleSheet, ActivityIndicator, Alert } from 'react-native'
 import { GetClima } from './getClima';
 import { useState, useEffect } from 'react';
@@ -30,7 +31,6 @@ export default function Clima() {
       getLocation();
     }
   };
-
 
   const getLocation = async () => {
     if(location) return;
@@ -74,45 +74,53 @@ export default function Clima() {
   const styles = StyleSheet.create({
     container: {
       backgroundColor: COLORS.white,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingHorizontal: 15, 
-      paddingVertical: 15,
-      borderRadius: 12,
+      padding: 8,
+      borderRadius: 10,
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.25,
-      shadowRadius: 8,
-      elevation: 8,
-      marginHorizontal: 10,
-      marginVertical: 5,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 4,
+      elevation: 4,
     },
-    climaContainer: {
+    contenido: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
     },
-    texto: {
-      fontSize: 14,
-      marginLeft: 6,
-      color: COLORS.text,
+ 
+    temp: {
+      fontSize: 18,
       fontWeight: 'bold',
-      fontStyle: 'italic',
+      color: COLORS.text,
+    },
+    descripcion: {
+      fontSize: 12,
+      color: COLORS.subtitle,
       textTransform: 'capitalize',
     },
+    ciudad: {
+      fontSize: 11,
+      color: COLORS.subtitle,
+      fontWeight: '500',
+    },
   });
+
   const climaRedondeado = Math.round(clima?.main?.temp);
 
   return (
     clima && (
       <View style={styles.container}>
-        {estaCargando ? <ActivityIndicator size="large" color={COLORS.primary} /> : (
-          <View style={styles.climaContainer}>
-            <Image source={{ uri: `https://openweathermap.org/img/wn/${clima?.weather[0]?.icon}.png` }} style={{ width: 50, height: 50 }} />
-            <View >
-              <Text style={styles.texto}>{climaRedondeado}°C</Text>
-              <Text style={styles.texto}>{clima?.weather[0]?.description}</Text>
+        {estaCargando ? (
+          <ActivityIndicator size="small" color={COLORS.primary} />
+        ) : (
+          <View style={styles.contenido}>
+            <Image 
+              source={{ uri: `https://openweathermap.org/img/wn/${clima?.weather[0]?.icon}.png` }} 
+              style={{ width: 40, height: 40 }} 
+            />
+            <View style={styles.info}>
+              <Text style={styles.temp}>{climaRedondeado}°C</Text>
+              <Text style={styles.descripcion}>{clima?.weather[0]?.description}</Text>
+              <Text style={styles.ciudad}>{clima?.name}</Text>
             </View>
           </View>
         )}
