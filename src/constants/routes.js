@@ -10,9 +10,9 @@ export const RUTAS = [
     ruta: '/habitos',
   },
   {
-    nombre: 'Historial',
-    icono: 'history',
-    ruta: '/historial',
+    nombre: 'Bienestar',
+    icono: 'heart',
+    ruta: '/bienestar',
   },
   {
     nombre: 'Perfil',

@@ -20,6 +20,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    marginBottom: 60, // Espacio para el navbar
+    marginBottom: 60, 
   },
 }); 
