@@ -21,7 +21,6 @@ export default function Home() {
       paddingHorizontal: 15,
     },
     climaContainer: {
-      flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
       paddingHorizontal: 20,

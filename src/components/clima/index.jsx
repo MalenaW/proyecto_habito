@@ -1,4 +1,3 @@
-// src/components/clima/index.jsx - VERSIÓN COMPACTA
 import { View, Text, Image, StyleSheet, ActivityIndicator, Alert } from 'react-native'
 import { GetClima } from './getClima';
 import { useState, useEffect } from 'react';
