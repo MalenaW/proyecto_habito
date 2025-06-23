@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { AuthProvider, useAuth } from '../context/authContext';
 import { View, Text } from 'react-native';
 import { HabitosProvider } from '../context/habitoContext';
+import { EstadosProvider } from '../context/estadosContext';
 
 
 function ProtectedLayout() {
@@ -36,9 +37,10 @@ export default function LayoutPrincipal() {
   return (
     <AuthProvider>
       <HabitosProvider>
+        <EstadosProvider>
          <ProtectedLayout />
+         </EstadosProvider>
       </HabitosProvider>
-  
     </AuthProvider>
   );
 }

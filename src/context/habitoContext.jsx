@@ -9,7 +9,7 @@ export const HabitosProvider = ({ children }) => {
   const [habitos, setHabitos] = useState([]);
 
 const agregarHabito = (nuevoHabito) => {
-    setHabitos(prev => [...prev, { ...nuevoHabito, id: Date.now().toString() }]);
+    setHabitos(prev => [...prev, { ...nuevoHabito, id: Date.now().toString() }] );
 };
 
 const editarHabito = (id, actualizacion) => {
