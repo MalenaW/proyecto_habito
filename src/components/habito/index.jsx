@@ -1,13 +1,25 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { COLORS } from "../../constants/theme";
 
-export default function HabitoItem({ item, onEdit, onDelete }) {
+import { useHabitos } from "../../context/habitoContext";
+
+
+export default function HabitoItem({ item, onEdit, onDelete, fecha }) {
+  const { marcarHabitoComoCumplido, habitoEstaCumplido } = useHabitos();
+  const completado = habitoEstaCumplido(fecha, item.id);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, completado && styles.completado] }>
+    <TouchableOpacity onPress={() => marcarHabitoComoCumplido(fecha, item.id)} style={styles.checkBox}>
+        <Text style={styles.checkboxText}>
+          {completado ? '✅' : '⬜'}
+        </Text>
+      </TouchableOpacity>
+
       <View style={styles.content}>
         <Text style={styles.nombre}>{item.nombre}</Text>
         <Text style={styles.dias}>
-          {item.dias?.join(' • ') || 'Sin días configurados'}
+          {item.dias?.join(' • ')}
         </Text>
       </View>
       <View style={styles.actions}>
@@ -46,14 +58,27 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4,
     borderLeftColor: COLORS.secondary,
   },
+  completado: {
+    backgroundColor: COLORS.seleccionado,
+    shadowColor: '#10b981',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    padding: 20
+  },
+  checkBox:{
+      paddingRight: 15,
+
+  },
   content: {
     flex: 1,
     paddingRight: 12,
   },
   nombre: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
     textTransform: 'capitalize',
+    alignItems: "center",
     color: COLORS.text,
     marginBottom: 4,
   },
@@ -76,5 +101,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
+  },
+    checkboxText: {
+    fontSize: 20,
   }
 });

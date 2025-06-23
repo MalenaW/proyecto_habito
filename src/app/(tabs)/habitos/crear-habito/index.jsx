@@ -53,8 +53,8 @@ export default function CrearHabito(){
       router.replace('/habitos');
     };
 
-    const isDisabled = !nombre || dias.length === 0;
-
+    const isDisabled = !nombre;
+    
     return( 
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContent}>

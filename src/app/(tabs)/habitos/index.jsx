@@ -7,7 +7,7 @@ import { useRouter } from 'expo-router';
 import { COLORS } from '../../../constants/theme';
 import { useHabitos } from '../../../context/habitoContext';
 import { Calendar } from 'react-native-calendars';
-import { format, getDay, isAfter, parseISO } from 'date-fns';
+import { format, getDay, isAfter, isSameDay, parseISO } from 'date-fns';
 import HabitoItem from '../../../components/habito';
 
 export default function Habitos() {
@@ -28,7 +28,7 @@ export default function Habitos() {
     const diasSemanaMap = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
     const diaString = diasSemanaMap[diaSeleccionado];
     
-    return h.dias.includes(diaString);
+    return h.dias.length === 0 ? isSameDay(fechaInicioHabito, fechaSeleccionadaDate): h.dias.includes(diaString);
   });
 
   const handleEdit = (habito) => {
@@ -101,11 +101,13 @@ export default function Habitos() {
                   item={item} 
                   onEdit={handleEdit} 
                   onDelete={eliminarHabito} 
+                  fecha={fechaSeleccionada}
                 />
               )}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.listaContent}
-            />
+            /> 
+ 
           )}
         </View>
       </View>
@@ -230,4 +232,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
+  containerBox :{
+    flexDirection: 'row',
+    marginBottom: 10,
+   
+  }
 });
