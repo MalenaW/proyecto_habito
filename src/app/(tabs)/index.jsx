@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   },
   buttonFlotante: {
     position: 'absolute',
-    bottom: 60, 
+    bottom: 70, 
     right: 20,
     backgroundColor: COLORS.secondary,
     width: 60,

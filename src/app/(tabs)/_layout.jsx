@@ -1,15 +1,16 @@
 import { Stack } from 'expo-router';
 import { View, StyleSheet } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context"
 import Navbar from '../../components/Navbar';
 
 export default function TabsLayout() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Stack screenOptions={{ headerShown: false }} />
       </View>
       <Navbar />
-    </View>
+    </SafeAreaView>
   );
 }
 

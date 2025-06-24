@@ -74,7 +74,6 @@ export default function Habitos() {
         />
       </View>
 
-      {/* Sección de hábitos */}
       <View style={styles.habitosSection}>
         <View style={styles.habitosHeader}>
           <Text style={styles.habitosTitulo}>
@@ -85,7 +84,6 @@ export default function Habitos() {
           </Text>
         </View>
 
-        {/* Lista de hábitos con scroll */}
         <View style={styles.listaContainer}>
           {habitosFiltrados.length === 0 ? (
             <View style={styles.emptyState}>
@@ -211,7 +209,7 @@ const styles = StyleSheet.create({
   },
   botonFlotante: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 40,
     right: 20,
     backgroundColor: COLORS.secondary,
     width: 56,

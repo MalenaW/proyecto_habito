@@ -63,8 +63,6 @@ export default function Bienestar() {
 
         <Videos />
         <Recetas />
-        
-        {/* Espacio extra al final para que no se corte */}
         <View style={{ height: 20 }} />
       </ScrollView>
     </SafeAreaView>
