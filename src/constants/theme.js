@@ -10,4 +10,5 @@ export const COLORS = {
   error: '#FF3B30',
   success: '#34C759',
   bordo: '#d9534f',
+  seleccionado: 'rgba(140, 180, 185, 0.5)',
 };
