@@ -42,12 +42,7 @@ export default function Frases() {
 
   if (!frase) return null;
 
- return (
-  <View style={styles.container}>
-    <Text style={styles.frase}>{frase.q}</Text>
-    <Text style={styles.autor}>– {frase.a}</Text>
-
-   <TouchableOpacity onPress={async () => {
+const handlefavorite = async () => {
   try {
     const favoritasPrevias = await AsyncStorage.getItem('frasesFavoritas');
     const favoritas = favoritasPrevias ? JSON.parse(favoritasPrevias) : [];
@@ -63,7 +58,18 @@ export default function Frases() {
   } catch (error) {
     console.error('Error al guardar frase favorita', error);
   }
-}}>
+}
+
+
+
+ return (
+  <View style={styles.container}>
+    <Text style={styles.frase}>{frase.q}</Text>
+    <Text style={styles.autor}>– {frase.a}</Text>
+
+   <TouchableOpacity onPress={handlefavorite}>
+
+
       <Text style={{ color: 'green', marginTop: 10 }}>💚 Marcar como favorita</Text>
     </TouchableOpacity>
   </View>
